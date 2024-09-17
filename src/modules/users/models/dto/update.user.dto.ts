@@ -1,22 +1,18 @@
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsArray,
   IsEnum,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
   MaxLength,
-  ValidateNested,
 } from 'class-validator';
-import { UpdateSkillsDto } from 'src/skills/models/dto/updateSkills.dto';
-import { CategoryEnum } from '../enum/';
-import { ApiProperty } from '@nestjs/swagger';
+import { CategoryEnum } from '../enum';
 
 export class UpdateUserDto {
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: 'David',
-    required: false,
   })
   @IsOptional()
   @IsString()
@@ -24,9 +20,8 @@ export class UpdateUserDto {
   @MaxLength(20)
   name: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: 'Filman',
-    required: false,
   })
   @IsOptional()
   @IsString()
@@ -34,27 +29,23 @@ export class UpdateUserDto {
   @MaxLength(20)
   surname: string;
 
-  @ApiProperty({
-    example: [{ id: 1, name: 'Development', level: 'Senior' }],
-    required: false,
+  @ApiPropertyOptional({
+    example: [1, 2, 3],
   })
   @IsOptional()
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => UpdateSkillsDto)
-  skills: UpdateSkillsDto[];
+  @Type(() => Number)
+  skills: number[];
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: 'dev',
-    required: false,
   })
   @IsOptional()
   @IsEnum(CategoryEnum, { message: 'Wrong category provided.' })
   category: CategoryEnum;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: 'it',
-    required: false,
   })
   @IsOptional()
   @IsNotEmpty()

@@ -10,24 +10,20 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { CreateUserDto, FilterUserDto, UpdateUserDto } from './models/dto/';
+import { CreateUserDto, UpdateUserDto } from './models/dto/';
 import { UsersService } from './users.service';
 import { ApiTags } from '@nestjs/swagger';
+import { FilterUserDto } from './models/dto/filter.user.dto';
 
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
-  @Get('filter')
-  @HttpCode(200)
-  findByFilters(@Query() filters: FilterUserDto) {
-    return this.usersService.findByFilters(filters);
-  }
 
   @Get()
   @HttpCode(200)
-  getAllUsers() {
-    return this.usersService.getAllUsers();
+  getAllUsers(@Query() filters: FilterUserDto) {
+    return this.usersService.getAllUsers(filters);
   }
 
   @Post()

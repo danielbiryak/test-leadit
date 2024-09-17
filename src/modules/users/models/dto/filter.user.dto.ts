@@ -1,3 +1,4 @@
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsEnum,
@@ -7,22 +8,20 @@ import {
   IsString,
   MaxLength,
 } from 'class-validator';
-import { CategoryEnum, OrderEnum } from '../enum/';
-import { ApiProperty } from '@nestjs/swagger';
+import { FilterDto } from 'src/common/api/filter.dto';
+import { CategoryEnum } from '../enum';
 
-export class FilterUserDto {
-  @ApiProperty({
+export class FilterUserDto extends FilterDto {
+  @ApiPropertyOptional({
     example: 1,
-    required: false,
   })
   @IsNumber()
   @IsOptional()
   @Type(() => Number)
   id: number;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: 'David',
-    required: false,
   })
   @IsOptional()
   @IsString()
@@ -30,9 +29,8 @@ export class FilterUserDto {
   @MaxLength(20)
   name: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: 'Filman',
-    required: false,
   })
   @IsOptional()
   @IsString()
@@ -40,31 +38,24 @@ export class FilterUserDto {
   @MaxLength(20)
   surname: string;
 
-  @ApiProperty({
-    example: 'ASC',
-    required: false,
+  @ApiPropertyOptional({
+    type: () => [Number],
+    description: 'Array of skill IDs',
+    example: [1, 2, 3],
   })
   @IsOptional()
-  @IsEnum(OrderEnum, { message: 'Wrong order provided.' })
-  skillOrder: OrderEnum;
+  @Type(() => Array)
+  skills: number[];
 
-  //   @IsOptional()
-  //   @IsArray()
-  //   @ValidateNested({ each: true })
-  //   @Type(() => SkillDto)
-  //   skills: SkillDto[];
-
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: 'dev',
-    required: false,
   })
   @IsOptional()
   @IsEnum(CategoryEnum, { message: 'Wrong category provided.' })
   category: CategoryEnum;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: 'it',
-    required: false,
   })
   @IsOptional()
   @IsNotEmpty()

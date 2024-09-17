@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { SkillsModule } from './skills/skills.module';
-import { UserModule } from './users/users.module';
+import { SkillsModule } from './modules/skills/skills.module';
+import { UserModule } from './modules/users/users.module';
 
 @Module({
   imports: [
