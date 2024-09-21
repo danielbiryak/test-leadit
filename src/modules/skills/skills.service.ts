@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { errorHandler } from 'src/common/error/error.handler';
 import { In, Repository } from 'typeorm';
 import { FilterResponse } from '../users/models/type/filter.response.type';
 import { FilterSkillDto } from './models/dto/filter.skill.dto';
@@ -17,64 +16,52 @@ export class SkillsService {
   ) {}
 
   createSkill(skill: SkillDto): Promise<SkillEntity> {
-    try {
-      const newSkill = this.skillsRepository.create(skill);
+    const newSkill = this.skillsRepository.create(skill);
 
-      return this.skillsRepository.save(newSkill);
-    } catch (error: unknown) {
-      errorHandler(this.logger, error, this.createSkill.name);
-    }
+    return this.skillsRepository.save(newSkill);
   }
 
   async findAll(
     requestSkillDto: FilterSkillDto,
   ): Promise<FilterResponse<SkillEntity>> {
-    try {
-      const { orderBy, orderDirection, page, limit, search, ...rest } =
-        requestSkillDto;
+    const { orderBy, orderDirection, page, limit, search, ...rest } =
+      requestSkillDto;
 
-      const query = this.skillsRepository.createQueryBuilder('skill');
+    const query = this.skillsRepository.createQueryBuilder('skill');
 
-      for (const [k, v] of Object.entries(rest)) {
-        query.andWhere(`skill.${k} = :v`, { v });
-      }
-
-      if (orderBy) {
-        query.orderBy(`skill.${orderBy}`, orderDirection || 'ASC');
-      }
-
-      if (search) {
-        for (const key of ['name']) {
-          query.orWhere(`skill.${key} LIKE :${key}search`, {
-            [`${key}search`]: `%${search}%`,
-          });
-        }
-      }
-
-      query.skip((page - 1) * limit).take(limit);
-
-      const [skills, total] = await query.getManyAndCount();
-
-      return {
-        data: skills,
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-      };
-    } catch (error: unknown) {
-      errorHandler(this.logger, error, this.findAll.name);
+    for (const [k, v] of Object.entries(rest)) {
+      query.andWhere(`skill.${k} = :v`, { v });
     }
+
+    if (orderBy) {
+      query.orderBy(`skill.${orderBy}`, orderDirection || 'ASC');
+    }
+
+    if (search) {
+      for (const key of ['name']) {
+        query.orWhere(`skill.${key} LIKE :${key}search`, {
+          [`${key}search`]: `%${search}%`,
+        });
+      }
+    }
+
+    query.skip((page - 1) * limit).take(limit);
+
+    const [skills, total] = await query.getManyAndCount();
+
+    return {
+      data: skills,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async getSkillsByIds(ids: number[]): Promise<SkillEntity[]> {
-    try {
-      return this.skillsRepository.find({
-        select: ['id', 'name'],
-        where: { id: In(ids) },
-      });
-    } catch (error: unknown) {
-      errorHandler(this.logger, error, this.getSkillsByIds.name);
-    }
+    return this.skillsRepository.find({
+      select: ['id', 'name'],
+      where: { id: In(ids) },
+    });
   }
 }
